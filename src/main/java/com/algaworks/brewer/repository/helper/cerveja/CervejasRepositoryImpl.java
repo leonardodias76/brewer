@@ -1,14 +1,15 @@
 package com.algaworks.brewer.repository.helper.cerveja;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -24,21 +25,34 @@ public class CervejasRepositoryImpl implements CervejasRepositoryQueries {
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
 	@Override
-	public List<Cerveja> filtrar(CervejaFilter cervejaFilter, Pageable pageable) {
+	public Page<Cerveja> filtrar(CervejaFilter cervejaFilter, Pageable pageable) {
 		Criteria criteria = manager.unwrap(Session.class).createCriteria(Cerveja.class);
-		
+
 		int paginaAtual = pageable.getPageNumber();
 		int totalRegistrosPorPagina = pageable.getPageSize();
 		int primeiroRegistro = paginaAtual * totalRegistrosPorPagina;
-		
+
 		criteria.setFirstResult(primeiroRegistro);
 		criteria.setMaxResults(totalRegistrosPorPagina);
+
+		adicionarFiltro(cervejaFilter, criteria);
 		
+		return new PageImpl<>(criteria.list(), pageable, total(cervejaFilter));
+	}
+
+	private Long total(CervejaFilter cervejaFilter) {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Cerveja.class);
+		adicionarFiltro(cervejaFilter, criteria);
+		criteria.setProjection(Projections.rowCount());
+		return (Long) criteria.uniqueResult();
+	}
+
+	private void adicionarFiltro(CervejaFilter cervejaFilter, Criteria criteria) {
 		if (cervejaFilter != null) {
 			if (!StringUtils.isEmpty(cervejaFilter.getSku())) {
 				criteria.add(Restrictions.eq("sku", cervejaFilter.getSku()));
 			}
-			
+
 			if (!StringUtils.isEmpty(cervejaFilter.getNome())) {
 				criteria.add(Restrictions.ilike("nome", cervejaFilter.getNome(), MatchMode.ANYWHERE));
 			}
@@ -63,9 +77,8 @@ public class CervejasRepositoryImpl implements CervejasRepositoryQueries {
 				criteria.add(Restrictions.le("valor", cervejaFilter.getValorAte()));
 			}
 		}
-		return criteria.list();
 	}
-	
+
 	private boolean isEstiloPresente(CervejaFilter filtro) {
 		return filtro.getEstilo() != null && filtro.getEstilo().getCodigo() != null;
 	}
