@@ -18,17 +18,15 @@ public class CidadesController {
 
 	@Autowired
 	private CidadesRepository cidadesRepository;
-	
+
 	@RequestMapping("/nova")
 	public String nova() {
 		return "cidade/CadastroCidade";
 	}
-	
-	@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody List<Cidade> pesquisarPorCodigoEstado(
-			@RequestParam(name = "estado", defaultValue = "-1") Long codigoEstado) {
 
+	@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody List<Cidade> pesquisarPorCodigoEstado(@RequestParam(name = "estado", defaultValue = "-1") Long codigoEstado) {
 		return cidadesRepository.findByEstadoCodigo(codigoEstado);
 	}
-	
+
 }
