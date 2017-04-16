@@ -57,8 +57,9 @@ public class Cliente implements Serializable {
 
 	@Embedded
 	private Endereco endereco;
-	
-	@PrePersist @PreUpdate
+
+	@PrePersist
+	@PreUpdate
 	private void prePersistPreUpdate() {
 		this.cpfOuCnpj = this.cpfOuCnpj.replaceAll("\\.|-|/", "");
 	}
@@ -119,6 +120,10 @@ public class Cliente implements Serializable {
 		this.endereco = endereco;
 	}
 
+	public String getCpfOuCnpjSemFormatacao() {
+		return TipoPessoa.removerFormatacao(this.cpfOuCnpj);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -143,5 +148,4 @@ public class Cliente implements Serializable {
 			return false;
 		return true;
 	}
-
 }
