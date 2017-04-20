@@ -6,6 +6,7 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,9 @@ public class CidadesRepositoryImpl implements CidadesRepositoryQueries {
 
 		paginacaoUtil.preparaPaginacao(criteria, pageable);
 		adicionarFiltro(filtro, criteria);
-		criteria.createAlias("estado", "e");
+		criteria.createAlias("estado", "e"); // A criação do alias é para evitar o erro de lazy
+		
+		criteria.addOrder(Order.asc("nome"));
 
 		return new PageImpl<>(criteria.list(), pageable, total(filtro));
 	}
