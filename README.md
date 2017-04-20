@@ -2,6 +2,7 @@
 This project was used in my Spring Framework Expert classes from Algaworks.
 
 ## Libs
+* Maven, 3.2
 * Spring MVC, 4.3.6.RELEASE
 * Spring Data JPA, 1.10.2.RELEASE
 * Servlet API, 3.1.0
@@ -15,6 +16,7 @@ This project was used in my Spring Framework Expert classes from Algaworks.
 * Thumbnailator - Generate Thumbnail , 0.4.8
 * Cache - Guava, 19.0
 * JQuery
+* Flyway, 4.0.2
 
 ## Infrastructure
 * JDK 1.8
