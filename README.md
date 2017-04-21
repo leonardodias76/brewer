@@ -15,7 +15,7 @@ This project was used in my Spring Framework Expert classes from Algaworks.
 * Jackson - JSON, 2.7.5
 * Thumbnailator - Generate Thumbnail , 0.4.8
 * Cache - Guava, 19.0
-* JQuery
+* JQuery, 2.2.3
 * Flyway, 4.0.2
 * Apache Bean Utils, 1.9.2
 
