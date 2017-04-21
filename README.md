@@ -1,4 +1,4 @@
-# brewer
+# Brewer
 This project was used in my Spring Framework Expert classes from Algaworks.
 
 ## Libs
@@ -17,6 +17,7 @@ This project was used in my Spring Framework Expert classes from Algaworks.
 * Cache - Guava, 19.0
 * JQuery
 * Flyway, 4.0.2
+* Apache Bean Utils, 1.9.2
 
 ## Infrastructure
 * JDK 1.8
