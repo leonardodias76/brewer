@@ -23,7 +23,7 @@ import com.algaworks.brewer.controller.page.PageWrapper;
 import com.algaworks.brewer.model.Estilo;
 import com.algaworks.brewer.repository.filter.EstiloFilter;
 import com.algaworks.brewer.repository.helper.estilo.EstilosRepositoryQueries;
-import com.algaworks.brewer.service.EstilosService;
+import com.algaworks.brewer.service.CadastroEstiloService;
 import com.algaworks.brewer.service.exeptions.EstiloJaCadastradoException;
 
 @Controller
@@ -31,7 +31,7 @@ import com.algaworks.brewer.service.exeptions.EstiloJaCadastradoException;
 public class EstilosController {
 
 	@Autowired
-	private EstilosService estilosService;
+	private CadastroEstiloService estilosService;
 	
 	@Autowired
 	private EstilosRepositoryQueries estilosRepository;

@@ -5,6 +5,7 @@ This project was used in my Spring Framework Expert classes from Algaworks.
 * Maven, 3.2
 * Spring MVC, 4.3.6.RELEASE
 * Spring Data JPA, 1.10.2.RELEASE
+* Spring Security, 4.1.1.RELEASE
 * Servlet API, 3.1.0
 * Thymeleaf, 3.0.3.RELEASE
 * Thymeleaf - Layout Dialect, 2.0.0

@@ -11,7 +11,7 @@ import com.algaworks.brewer.repository.EstilosRepository;
 import com.algaworks.brewer.service.exeptions.EstiloJaCadastradoException;
 
 @Service
-public class EstilosService {
+public class CadastroEstiloService {
 
 	@Autowired
 	private EstilosRepository estilosRepository;

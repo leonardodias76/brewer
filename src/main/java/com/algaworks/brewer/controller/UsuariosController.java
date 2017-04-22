@@ -20,7 +20,7 @@ import com.algaworks.brewer.service.exeptions.UsuarioJaCadastradoException;
 public class UsuariosController {
 
 	@Autowired
-	private CadastroUsuarioService usuarioService;
+	private CadastroUsuarioService cadastroUsuarioService;
 	
 	@Autowired
 	private GruposRepository gruposRepository;
@@ -39,7 +39,7 @@ public class UsuariosController {
 		}
 
 		try {
-			usuarioService.salvar(usuario);
+			cadastroUsuarioService.salvar(usuario);
 		} catch (UsuarioJaCadastradoException e) {
 			result.rejectValue("email", e.getLocalizedMessage(), e.getMessage());
 			return novo(usuario);
