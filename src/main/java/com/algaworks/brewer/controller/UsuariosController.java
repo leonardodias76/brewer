@@ -2,6 +2,7 @@ package com.algaworks.brewer.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,11 +11,16 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.algaworks.brewer.model.Usuario;
+import com.algaworks.brewer.service.UsuarioService;
+import com.algaworks.brewer.service.exeptions.UsuarioJaCadastradoException;
 
 @Controller
 @RequestMapping("/usuarios")
 public class UsuariosController {
-	
+
+	@Autowired
+	private UsuarioService usuarioService;
+
 	@RequestMapping("/novo")
 	public ModelAndView novo(Usuario usuario) {
 		ModelAndView mv = new ModelAndView("usuario/CadastroUsuario");
@@ -23,11 +29,18 @@ public class UsuariosController {
 
 	@PostMapping("/novo")
 	public ModelAndView salvar(@Valid Usuario usuario, BindingResult result, RedirectAttributes attributes) {
-		if(result.hasErrors()) {
+		if (result.hasErrors()) {
 			return novo(usuario);
 		}
-		
-		attributes.addFlashAttribute("message", "Usuário salvo com sucesso");
+
+		try {
+			usuarioService.salvar(usuario);
+		} catch (UsuarioJaCadastradoException e) {
+			result.rejectValue("email", null, e.getMessage());
+			return novo(usuario);
+		}
+
+		attributes.addFlashAttribute("mensagem", "Usuário salvo com sucesso");
 		return new ModelAndView("redirect:/usuarios/novo");
 	}
 
