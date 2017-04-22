@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.algaworks.brewer.model.Usuario;
 import com.algaworks.brewer.repository.GruposRepository;
-import com.algaworks.brewer.service.UsuarioService;
+import com.algaworks.brewer.service.CadastroUsuarioService;
 import com.algaworks.brewer.service.exeptions.UsuarioJaCadastradoException;
 
 @Controller
@@ -20,7 +20,7 @@ import com.algaworks.brewer.service.exeptions.UsuarioJaCadastradoException;
 public class UsuariosController {
 
 	@Autowired
-	private UsuarioService usuarioService;
+	private CadastroUsuarioService usuarioService;
 	
 	@Autowired
 	private GruposRepository gruposRepository;

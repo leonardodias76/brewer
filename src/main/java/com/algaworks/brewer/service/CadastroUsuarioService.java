@@ -11,7 +11,7 @@ import com.algaworks.brewer.repository.UsuarioRepository;
 import com.algaworks.brewer.service.exeptions.UsuarioJaCadastradoException;
 
 @Service
-public class UsuarioService {
+public class CadastroUsuarioService {
 
 	@Autowired
 	private UsuarioRepository usuarioRepository;
