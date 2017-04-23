@@ -38,14 +38,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 		.authorizeRequests()
+			.antMatchers("/cidades/nova").hasRole("CADASTRAR_CIDADE")
+			.antMatchers("/usuarios/**").hasRole("CADASTRAR_USUARIO")
 			.anyRequest().authenticated()
 		.and()
 			.formLogin()
 				.loginPage("/login")
 				.permitAll()
 		.and()
-			.csrf()
-				.disable();
+			.csrf().disable();
 	}
 
 	@Bean
