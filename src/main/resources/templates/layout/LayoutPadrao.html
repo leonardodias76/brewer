@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
-	  xmlns:th="http://www.thymeleaf.org" 
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -12,10 +10,10 @@
 <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors.min.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/algaworks.min.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/application.css}" />
-<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/brewer.css}"/>
-<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-datepicker.standalone.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/brewer.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-datepicker.standalone.min.css}" />
 
-<link rel="shortcut icon" th:href="@{/images/favicon.png}"/>
+<link rel="shortcut icon" th:href="@{/images/favicon.png}" />
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,6 +23,9 @@
 	<![endif]-->
 </head>
 <body>
+	<input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+	<input type="hidden" name="_csrf_header" th:value="${_csrf.headerName}" />
+	
 	<div class="aw-layout-page">
 		<div th:replace="layout/fragments/BarraNavegacao :: navbar"></div>
 
@@ -39,12 +40,12 @@
 
 	<script th:src="@{/javascripts/vendors/jquery.maskMoney.min.js}"></script>
 	<script th:src="@{/javascripts/vendors/jquery.mask.min.js}"></script>
-	
+
 	<script th:src="@{/javascripts/vendors/bootstrap-datepicker.min.js}"></script>
-	<script th:src="@{/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>	
+	<script th:src="@{/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>
 
 	<script th:src="@{/javascripts/brewer.js}"></script>
-	
+
 	<th:block layout:fragment="javascript-extra"></th:block>
 </body>
 </html>
