@@ -10,6 +10,7 @@ This project was used in my Spring Framework Expert classes from Algaworks.
 * Thymeleaf, 3.0.3.RELEASE
 * Thymeleaf - Layout Dialect, 2.0.0
 * Thymeleaf extras data attribute, 2.0.1
+* Thymeleaf - Extras Spring Security, 3.0.0.RELEASE
 * Bean Validation / Hibernate Validator, 5.2.4.Final
 * JPA / Hibernate, 5.1.0.Final
 * Log4j, 2.6
