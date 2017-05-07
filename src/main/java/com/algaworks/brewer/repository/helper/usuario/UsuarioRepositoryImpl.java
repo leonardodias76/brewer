@@ -17,6 +17,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
 import org.hibernate.sql.JoinType;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.algaworks.brewer.model.Grupo;
@@ -62,7 +63,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepositoryQueries {
 			}
 
 			criteria.createAlias("grupos", "g", JoinType.LEFT_OUTER_JOIN);
-			if (filtro.getGrupos() != null && !filtro.getGrupos().isEmpty()) {
+			if (!CollectionUtils.isEmpty(filtro.getGrupos())) {
 				List<Criterion> subqueries = new ArrayList<>();
 				for (Long codigoGrupo : filtro.getGrupos().stream().mapToLong(Grupo::getCodigo).toArray()) {
 					DetachedCriteria dc = DetachedCriteria.forClass(UsuarioGrupo.class);
