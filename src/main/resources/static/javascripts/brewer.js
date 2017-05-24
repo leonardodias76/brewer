@@ -1,5 +1,4 @@
-var Brewer = Brewer || {}; // Verifica se já foi criado o Brewer, caso
-// contrário cria um novo Brewer;
+var Brewer = Brewer || {};
 
 Brewer.MaskMoney = (function() {
 
@@ -97,6 +96,11 @@ Brewer.Security = (function() {
 
 }());
 
+Brewer.formatarMoeda = function(valor) {
+	numeral.language('pt-br');
+	return numeral(valor).format('0,0.00');
+}
+
 $(function() {
 	var maskMoney = new Brewer.MaskMoney();
 	maskMoney.enable();
@@ -109,7 +113,7 @@ $(function() {
 
 	var maskDate = new Brewer.MaskDate();
 	maskDate.enable();
-	
+
 	var security = new Brewer.Security();
 	security.enable();
 
