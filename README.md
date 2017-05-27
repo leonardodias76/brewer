@@ -20,6 +20,7 @@ This project was used in my Spring Framework Expert classes from Algaworks.
 * JQuery, 2.2.3
 * Flyway, 4.0.2
 * Apache Bean Utils, 1.9.2
+* JUnit, 4,12
 
 ## Infrastructure
 * JDK 1.8
