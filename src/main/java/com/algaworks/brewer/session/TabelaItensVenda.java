@@ -32,4 +32,8 @@ public class TabelaItensVenda {
 	public int total() {
 		return itens.size();
 	}
+
+	public Object getItens() {
+		return itens;
+	}
 }
