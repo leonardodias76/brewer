@@ -35,6 +35,10 @@ public class TabelasItensSession {
 	public List<ItemVenda> getItens(String uuid) {
 		return buscarTabelaPorUuid(uuid).getItens();
 	}
+	
+	public Object getValorTotal(String uuid) {
+		return buscarTabelaPorUuid(uuid).getValorTotal();
+	}
 
 	/**
 	 * @formatter:off
