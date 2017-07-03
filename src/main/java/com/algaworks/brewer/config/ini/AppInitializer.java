@@ -33,7 +33,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 	@Override
 	protected Filter[] getServletFilters() {
 		HttpPutFormContentFilter httpPutFormContentFilter = new HttpPutFormContentFilter();
-        return new Filter[] { httpPutFormContentFilter };
+		return new Filter[] { httpPutFormContentFilter };
 	}
 
 	@Override
@@ -43,4 +43,5 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 		// temporario qdo fizer o upload
 		registration.setMultipartConfig(new MultipartConfigElement(""));
 	}
+
 }

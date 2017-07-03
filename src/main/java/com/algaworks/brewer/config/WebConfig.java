@@ -22,13 +22,14 @@ import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.format.number.NumberStyleFormatter;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
-import org.thymeleaf.ITemplateEngine;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
@@ -49,10 +50,11 @@ import com.google.common.cache.CacheBuilder;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 
 @Configuration
-@ComponentScan(basePackageClasses = {CervejasController.class, TabelasItensSession.class})
+@ComponentScan(basePackageClasses = { CervejasController.class, TabelasItensSession.class })
 @EnableWebMvc
 @EnableSpringDataWebSupport
 @EnableCaching
+@EnableAsync
 public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
@@ -71,10 +73,11 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
 	}
 
 	@Bean
-	public ITemplateEngine templateEngine() {
+	public TemplateEngine templateEngine() {
 		SpringTemplateEngine engine = new SpringTemplateEngine();
 		engine.setEnableSpringELCompiler(true);
 		engine.setTemplateResolver(templateResolver());
+
 		engine.addDialect(new LayoutDialect());
 		engine.addDialect(new BrewerDialect());
 		engine.addDialect(new DataAttributeDialect());
@@ -126,27 +129,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
 
 	@Bean
 	public CacheManager cacheManager() {
-		CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder().maximumSize(3) // Quantidade
-																								// de
-																								// objetos
-																								// a
-																								// serem
-																								// cacheados,
-																								// para
-																								// testar
-																								// colocamos
-																								// 3,
-																								// se
-																								// não
-																								// colocar
-																								// nada,
-																								// fica
-																								// infinito.
-				.expireAfterAccess(1, TimeUnit.MINUTES); // Tempo para que o
-															// cache expire, em
-															// produção deve-se
-															// colocar um tempo
-															// maior.
+		CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder().maximumSize(3).expireAfterAccess(20, TimeUnit.SECONDS);
 
 		GuavaCacheManager cacheManager = new GuavaCacheManager();
 		cacheManager.setCacheBuilder(cacheBuilder);
@@ -160,9 +143,10 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
 		bundle.setDefaultEncoding("UTF-8"); // http://www.utf8-chartable.de/
 		return bundle;
 	}
-	
+
 	@Bean
 	public DomainClassConverter<FormattingConversionService> domainClassConverter() {
 		return new DomainClassConverter<FormattingConversionService>(mvcConversionService());
 	}
+
 }
