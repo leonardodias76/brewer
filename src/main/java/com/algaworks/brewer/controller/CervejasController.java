@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +31,10 @@ import com.algaworks.brewer.repository.CervejasRepository;
 import com.algaworks.brewer.repository.EstilosRepository;
 import com.algaworks.brewer.repository.filter.CervejaFilter;
 import com.algaworks.brewer.service.CadastroCervejaService;
-import com.algaworks.brewer.service.exeptions.ImpossivelExcluirEntidadeException;
+import com.algaworks.brewer.service.exception.ImpossivelExcluirEntidadeException;
 
 @Controller
-@RequestMapping(value = "/cervejas")
+@RequestMapping("/cervejas")
 public class CervejasController {
 
 	@Autowired
@@ -45,29 +46,29 @@ public class CervejasController {
 	@Autowired
 	private CervejasRepository cervejasRepository;
 
-	@RequestMapping("/novo")
-	public ModelAndView novo(Cerveja cerveja) {
-		ModelAndView mv = new ModelAndView("cervejas/CadastroCervejas");
+	@RequestMapping("/nova")
+	public ModelAndView nova(Cerveja cerveja) {
+		ModelAndView mv = new ModelAndView("cerveja/CadastroCerveja");
 		mv.addObject("sabores", Sabor.values());
 		mv.addObject("estilos", estilosRepository.findAll());
 		mv.addObject("origens", Origem.values());
 		return mv;
 	}
 
-	@RequestMapping(value = "/novo", method = RequestMethod.POST)
-	public ModelAndView cadastrar(@Valid Cerveja cerveja, BindingResult result, RedirectAttributes attributes) {
+	@RequestMapping(value = { "/nova", "{\\d+}" }, method = RequestMethod.POST)
+	public ModelAndView salvar(@Valid Cerveja cerveja, BindingResult result, Model model, RedirectAttributes attributes) {
 		if (result.hasErrors()) {
-			return novo(cerveja);
+			return nova(cerveja);
 		}
 
 		cadastroCervejaService.save(cerveja);
-		attributes.addFlashAttribute("mensagem", "Cerveja Cadastrada com Sucesso.");
-		return new ModelAndView("redirect:/cervejas/novo");
+		attributes.addFlashAttribute("mensagem", "Cerveja salva com sucesso!");
+		return new ModelAndView("redirect:/cervejas/nova");
 	}
 
-	@GetMapping()
+	@GetMapping
 	public ModelAndView pesquisar(CervejaFilter cervejaFilter, BindingResult result, @PageableDefault(size = 2) Pageable pageable, HttpServletRequest httpServletRequest) {
-		ModelAndView mv = new ModelAndView("cervejas/PesquisaCervejas");
+		ModelAndView mv = new ModelAndView("cerveja/PesquisaCervejas");
 		mv.addObject("estilos", estilosRepository.findAll());
 		mv.addObject("sabores", Sabor.values());
 		mv.addObject("origens", Origem.values());
@@ -91,4 +92,12 @@ public class CervejasController {
 		}
 		return ResponseEntity.ok().build();
 	}
+
+	@GetMapping("/{codigo}")
+	public ModelAndView editar(@PathVariable("codigo") Cerveja cerveja) {
+		ModelAndView mv = nova(cerveja);
+		mv.addObject(cerveja);
+		return mv;
+	}
+
 }
