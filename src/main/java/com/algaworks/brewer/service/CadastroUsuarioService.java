@@ -10,8 +10,8 @@ import org.springframework.util.StringUtils;
 
 import com.algaworks.brewer.model.Usuario;
 import com.algaworks.brewer.repository.UsuarioRepository;
+import com.algaworks.brewer.service.exeptions.EmailUsuarioJaCadastradoException;
 import com.algaworks.brewer.service.exeptions.SenhaObrigatoriaUsuarioException;
-import com.algaworks.brewer.service.exeptions.UsuarioJaCadastradoException;
 
 @Service
 public class CadastroUsuarioService {
@@ -23,22 +23,28 @@ public class CadastroUsuarioService {
 	private PasswordEncoder passwordEncoder;
 	
 	@Transactional
-	public Usuario salvar(Usuario usuario) {
-		Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(usuario.getEmail());
-		if(usuarioOptional.isPresent()) {
-			throw new UsuarioJaCadastradoException("Usuario já cadastrado.");
+	public void salvar(Usuario usuario) {
+		Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
+		if (usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
+			throw new EmailUsuarioJaCadastradoException("E-mail já cadastrado");
 		}
 		
 		if (usuario.isNovo() && StringUtils.isEmpty(usuario.getSenha())) {
 			throw new SenhaObrigatoriaUsuarioException("Senha é obrigatória para novo usuário");
 		}
 		
-		if (usuario.isNovo()) {
+		if (usuario.isNovo() || !StringUtils.isEmpty(usuario.getSenha())) {
 			usuario.setSenha(this.passwordEncoder.encode(usuario.getSenha()));
-			usuario.setConfirmacaoSenha(usuario.getSenha());
+		} else if (StringUtils.isEmpty(usuario.getSenha())) {
+			usuario.setSenha(usuarioExistente.get().getSenha());
+		}
+		usuario.setConfirmacaoSenha(usuario.getSenha());
+		
+		if (!usuario.isNovo() && usuario.getAtivo() == null) {
+			usuario.setAtivo(usuarioExistente.get().getAtivo());
 		}
 		
-		return usuarioRepository.saveAndFlush(usuario);
+		usuarioRepository.save(usuario);
 	}
 	
 	@Transactional

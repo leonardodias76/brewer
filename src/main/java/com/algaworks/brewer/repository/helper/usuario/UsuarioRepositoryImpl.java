@@ -17,6 +17,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -37,7 +38,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepositoryQueries {
 
 	@Autowired
 	private PaginacaoUtil paginacaoUtil;
-	
+
 	@Override
 	public Optional<Usuario> porEmailEAtivo(String email) {
 		return manager.createQuery("from Usuario where lower(email) = lower(:email) and ativo = true", Usuario.class).setParameter("email", email).getResultList().stream().findFirst();
@@ -57,10 +58,20 @@ public class UsuarioRepositoryImpl implements UsuarioRepositoryQueries {
 		paginacaoUtil.preparaPaginacao(criteria, pageable);
 		adicionarFiltro(filtro, criteria);
 		criteria.addOrder(Order.asc("nome"));
-		
+
 		List<Usuario> filtrados = criteria.list();
 		filtrados.forEach(u -> Hibernate.initialize(u.getGrupos()));
 		return new PageImpl<>(filtrados, pageable, total(filtro));
+	}
+
+	@Transactional(readOnly = true)
+	@Override
+	public Usuario buscarComGrupos(Long codigo) {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Usuario.class);
+		criteria.createAlias("grupos", "g", JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("codigo", codigo));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return (Usuario) criteria.uniqueResult();
 	}
 
 	private Long total(UsuarioFilter filtro) {
