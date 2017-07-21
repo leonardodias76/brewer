@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -55,7 +56,7 @@ public class VendasController {
 
 	@Autowired
 	private VendasRepository vendasRepository;
-	
+
 	@Autowired
 	private Mailer mailer;
 
@@ -116,9 +117,9 @@ public class VendasController {
 		venda.setUsuario(usuarioSistema.getUsuario());
 
 		venda = cadastroVendaService.salvar(venda);
-		
+
 		mailer.enviar(venda);
-		
+
 		attributes.addFlashAttribute("mensagem", String.format("Venda nº %d salva com sucesso e e-mail enviado", venda.getCodigo()));
 		return new ModelAndView("redirect:/vendas/nova");
 	}
@@ -152,19 +153,31 @@ public class VendasController {
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
 	}
-	
+
 	@GetMapping("/{codigo}")
 	public ModelAndView editar(@PathVariable Long codigo) {
 		Venda venda = vendasRepository.buscarComItens(codigo);
-		
+
 		setUuid(venda);
 		for (ItemVenda item : venda.getItens()) {
 			tabelaItens.adicionarItem(venda.getUuid(), item.getCerveja(), item.getQuantidade());
 		}
-		
+
 		ModelAndView mv = nova(venda);
 		mv.addObject(venda);
 		return mv;
+	}
+
+	@PostMapping(value = "/nova", params = "cancelar")
+	public ModelAndView cancelar(Venda venda, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+		try {
+			cadastroVendaService.cancelar(venda);
+		} catch (AccessDeniedException e) {
+			return new ModelAndView("/403");
+		}
+
+		attributes.addFlashAttribute("mensagem", "Venda cancelada com sucesso");
+		return new ModelAndView("redirect:/vendas/" + venda.getCodigo());
 	}
 
 	private ModelAndView mvTabelaItensVenda(String uuid) {

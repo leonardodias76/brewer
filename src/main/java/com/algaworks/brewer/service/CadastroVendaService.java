@@ -4,12 +4,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.algaworks.brewer.model.StatusVenda;
 import com.algaworks.brewer.model.Venda;
-import com.algaworks.brewer.repository.VendasRepository;;
+import com.algaworks.brewer.repository.VendasRepository;
 
 @Service
 public class CadastroVendaService {
@@ -39,4 +40,12 @@ public class CadastroVendaService {
 		salvar(venda);
 	}
 
+	@PreAuthorize("#venda.usuario == principal.usuario or hasRole('CANCELAR_VENDA')")
+	@Transactional
+	public void cancelar(Venda venda) {
+		Venda vendaExistente = vendasRepository.findOne(venda.getCodigo());
+		
+		vendaExistente.setStatus(StatusVenda.CANCELADA);
+		vendasRepository.save(vendaExistente);
+	}
 }
