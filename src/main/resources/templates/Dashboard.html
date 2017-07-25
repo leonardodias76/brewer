@@ -89,12 +89,12 @@
 						</h2>
 					</div>
 					<div class="aw-graph-box__content">
-						<div class="aw-graph-box__no-data">
+						<!-- <div class="aw-graph-box__no-data">
 							<i class="fa  fa-line-chart  fa-2x"></i>
 							<span>Não há dados</span>
-						</div>
+						</div> -->
 						<div>
-							<canvas id="lineChart" height="160"></canvas>
+							<canvas id="graficoVendasPorMes" height="160"></canvas>
 						</div>
 					</div>
 				</div>
@@ -124,6 +124,8 @@
 </section>
 
 <th:block layout:fragment="javascript-extra">
+	<script th:src="@{/javascripts/vendors/Chart.min.js}"></script>
+	<script th:src="@{/javascripts/dashboard.graficos.js}"></script>
 </th:block>
 
 </html>
