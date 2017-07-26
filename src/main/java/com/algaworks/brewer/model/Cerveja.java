@@ -38,13 +38,13 @@ public class Cerveja implements Serializable {
 	private Long codigo;
 
 	@SKU
-	@NotBlank(message = "O campo SKU não pode ser vazio")
+	@NotBlank
 	private String sku;
 
-	@NotBlank(message = "O campo Nome não pode ser vazio")
+	@NotBlank
 	private String nome;
 
-	@NotBlank(message = "O campo Descrição não pode ser vazio")
+	@NotBlank
 	@Size(max = 50, message = "A descrição só pode conter 50 caracteres.")
 	private String descricao;
 
