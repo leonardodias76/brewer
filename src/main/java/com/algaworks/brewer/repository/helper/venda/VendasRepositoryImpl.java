@@ -110,7 +110,7 @@ public class VendasRepositoryImpl implements VendasRepositoryQueries {
 		
 		return vendasMes;
 	}
-	
+		
 	private Long total(VendaFilter filtro) {
 		Criteria criteria = manager.unwrap(Session.class).createCriteria(Venda.class);
 		adicionarFiltro(filtro, criteria);
