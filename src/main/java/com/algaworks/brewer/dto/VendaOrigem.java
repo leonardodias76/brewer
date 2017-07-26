@@ -7,7 +7,6 @@ public class VendaOrigem {
 	private Integer totalInternacional;
 
 	public VendaOrigem() {
-
 	}
 
 	public VendaOrigem(String mes, Integer totalNacional, Integer totalInternacional) {
@@ -39,5 +38,4 @@ public class VendaOrigem {
 	public void setMes(String mes) {
 		this.mes = mes;
 	}
-
 }
