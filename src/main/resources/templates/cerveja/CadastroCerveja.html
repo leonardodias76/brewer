@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="layout/LayoutPadrao" xmlns:brewer="http://brewer.algaworks.com">
+	layout:decorate="~{layout/LayoutPadrao}" xmlns:brewer="http://brewer.algaworks.com">
 
 <head>
 <title>Cadastro de cerveja</title>
@@ -90,7 +90,7 @@
 					</div>
 
 					<div class="col-lg-3  col-sm-6  form-group  bw-required" brewer:classforerror="origem">
-						<label for="origem" class="control-label">Origem</label>
+						<label class="control-label">Origem</label>
 						<div>
 							<th:block th:each="origem : ${origens}">
 								<div class="radio  radio-inline">
