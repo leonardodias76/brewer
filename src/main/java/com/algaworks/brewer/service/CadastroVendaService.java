@@ -1,18 +1,17 @@
 package com.algaworks.brewer.service;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
+import com.algaworks.brewer.model.StatusVenda;
+import com.algaworks.brewer.model.Venda;
+import com.algaworks.brewer.repository.VendasRepository;
+import com.algaworks.brewer.service.event.venda.VendaEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.algaworks.brewer.model.StatusVenda;
-import com.algaworks.brewer.model.Venda;
-import com.algaworks.brewer.repository.VendasRepository;
-import com.algaworks.brewer.service.event.vernda.VendaEvent;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 public class CadastroVendaService {
@@ -25,6 +24,10 @@ public class CadastroVendaService {
 
 	@Transactional
 	public Venda salvar(Venda venda) {
+		if (venda.isSalvarProibido()) {
+			throw new RuntimeException("Usuário tentando salvar uma venda proibida");
+		}
+
 		if (venda.isNova()) {
 			venda.setDataCriacao(LocalDateTime.now());
 		} else {
@@ -33,7 +36,8 @@ public class CadastroVendaService {
 		}
 
 		if (venda.getDataEntrega() != null) {
-			venda.setDataHoraEntrega(LocalDateTime.of(venda.getDataEntrega(), venda.getHorarioEntrega() != null ? venda.getHorarioEntrega() : LocalTime.NOON));
+			venda.setDataHoraEntrega(LocalDateTime.of(venda.getDataEntrega()
+					, venda.getHorarioEntrega() != null ? venda.getHorarioEntrega() : LocalTime.NOON));
 		}
 
 		return vendasRepository.saveAndFlush(venda);
@@ -43,7 +47,7 @@ public class CadastroVendaService {
 	public void emitir(Venda venda) {
 		venda.setStatus(StatusVenda.EMITIDA);
 		salvar(venda);
-		
+
 		publisher.publishEvent(new VendaEvent(venda));
 	}
 
@@ -51,8 +55,9 @@ public class CadastroVendaService {
 	@Transactional
 	public void cancelar(Venda venda) {
 		Venda vendaExistente = vendasRepository.findOne(venda.getCodigo());
-		
+
 		vendaExistente.setStatus(StatusVenda.CANCELADA);
 		vendasRepository.save(vendaExistente);
 	}
+
 }

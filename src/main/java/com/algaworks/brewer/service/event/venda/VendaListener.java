@@ -1,4 +1,4 @@
-package com.algaworks.brewer.service.event.vernda;
+package com.algaworks.brewer.service.event.venda;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;

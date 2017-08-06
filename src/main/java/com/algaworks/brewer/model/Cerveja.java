@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -25,13 +26,15 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.util.StringUtils;
 
+import com.algaworks.brewer.repository.listener.CervejaEntityListener;
 import com.algaworks.brewer.validation.SKU;
 
+@EntityListeners(CervejaEntityListener.class)
 @Entity
 @Table(name = "cerveja")
 public class Cerveja implements Serializable {
 
-	private static final long serialVersionUID = 4755797205397103756L;
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,86 +47,60 @@ public class Cerveja implements Serializable {
 	@NotBlank
 	private String nome;
 
-	@NotBlank
-	@Size(max = 50, message = "A descrição só pode conter 50 caracteres.")
+	@NotBlank(message = "A descrição é obrigatória")
+	@Size(max = 50, message = "O tamanho da descrição deve estar entre 1 e 50")
 	private String descricao;
 
-	@DecimalMin("0.01")
-	@DecimalMax(value = "999999.99", message = "O valor da cerveja deve ser menor que R$ 999.999,99")
-	@NotNull(message = "O valor é obrigatório")
+	@NotNull(message = "Valor é obrigatório")
+	@DecimalMin(value = "0.50", message = "O valor da cerveja deve ser maior que R$0,50")
+	@DecimalMax(value = "9999999.99", message = "O valor da cerveja deve ser menor que R$9.999.999,99")
 	private BigDecimal valor;
 
-	@Column(name = "teor_alcoolico")
-	@DecimalMax(value = "100", message = "O teor alcóolico deve ser menor ou igual a 100%")
 	@NotNull(message = "O teor alcóolico é obrigatório")
+	@DecimalMax(value = "100.0", message = "O valor do teor alcóolico deve ser menor que 100")
+	@Column(name = "teor_alcoolico")
 	private BigDecimal teorAlcoolico;
 
-	@Column(name = "comissao")
-	@DecimalMax(value = "100", message = "A comissão deve ser menor ou igual a 100%")
 	@NotNull(message = "A comissão é obrigatória")
+	@DecimalMax(value = "100.0", message = "A comissão deve ser igual ou menor que 100")
 	private BigDecimal comissao;
 
-	@Column(name = "quantidade_estoque")
+	@NotNull(message = "A quantidade em estoque é obrigatória")
 	@Max(value = 9999, message = "A quantidade em estoque deve ser menor que 9.999")
-	@NotNull(message = "O Estoque é obrigatório")
+	@Column(name = "quantidade_estoque")
 	private Integer quantidadeEstoque;
 
+	@NotNull(message = "A origem é obrigatória")
 	@Enumerated(EnumType.STRING)
-	@NotNull(message = "A origem é obrigatório")
 	private Origem origem;
 
+	@NotNull(message = "O sabor é obrigatório")
+	@Enumerated(EnumType.STRING)
+	private Sabor sabor;
+
+	@NotNull(message = "O estilo é obrigatório")
 	@ManyToOne
 	@JoinColumn(name = "codigo_estilo")
-	@NotNull(message = "O estilo é obrigatório")
 	private Estilo estilo;
 
-	@Enumerated(EnumType.STRING)
-	@NotNull(message = "O sabor é obrigatório")
-	private Sabor sabor;
-	
 	private String foto;
-	
+
 	@Column(name = "content_type")
 	private String contentType;
-	
+
 	@Transient
 	private boolean novaFoto;
-	
-	public String getFoto() {
-		return foto;
-	}
-	
-	public String getFotoOuMock() {
-		return !StringUtils.isEmpty(foto) ? foto : "cerveja-mock.png";
-	}
-	
-	public boolean temFoto() {
-		return !StringUtils.isEmpty(this.foto);
-	}
 
-	public void setFoto(String foto) {
-		this.foto = foto;
-	}
+	@Transient
+	private String urlFoto;
 
-	public String getContentType() {
-		return contentType;
-	}
+	@Transient
+	private String urlThumbnailFoto;
 
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
-	@PrePersist @PreUpdate
-	private void prePersistPreUpdate() {
+	@PrePersist
+	@PreUpdate
+	private void prePersistUpdate() {
 		sku = sku.toUpperCase();
-	}
-
-	public Long getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(Long codigo) {
-		this.codigo = codigo;
 	}
 
 	public String getSku() {
@@ -148,6 +125,14 @@ public class Cerveja implements Serializable {
 
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
 	}
 
 	public BigDecimal getValor() {
@@ -190,6 +175,14 @@ public class Cerveja implements Serializable {
 		this.origem = origem;
 	}
 
+	public Sabor getSabor() {
+		return sabor;
+	}
+
+	public void setSabor(Sabor sabor) {
+		this.sabor = sabor;
+	}
+
 	public Estilo getEstilo() {
 		return estilo;
 	}
@@ -198,14 +191,30 @@ public class Cerveja implements Serializable {
 		this.estilo = estilo;
 	}
 
-	public Sabor getSabor() {
-		return sabor;
+	public String getFoto() {
+		return foto;
 	}
 
-	public void setSabor(Sabor sabor) {
-		this.sabor = sabor;
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
-	
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	public String getFotoOuMock() {
+		return !StringUtils.isEmpty(foto) ? foto : "cerveja-mock.png";
+	}
+
+	public boolean temFoto() {
+		return !StringUtils.isEmpty(this.foto);
+	}
+
 	public boolean isNova() {
 		return codigo == null;
 	}
@@ -216,6 +225,22 @@ public class Cerveja implements Serializable {
 
 	public void setNovaFoto(boolean novaFoto) {
 		this.novaFoto = novaFoto;
+	}
+
+	public String getUrlFoto() {
+		return urlFoto;
+	}
+
+	public void setUrlFoto(String urlFoto) {
+		this.urlFoto = urlFoto;
+	}
+
+	public String getUrlThumbnailFoto() {
+		return urlThumbnailFoto;
+	}
+
+	public void setUrlThumbnailFoto(String urlThumbnailFoto) {
+		this.urlThumbnailFoto = urlThumbnailFoto;
 	}
 
 	@Override

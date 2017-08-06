@@ -1,12 +1,14 @@
 package com.algaworks.brewer.config.ini;
 
-import javax.servlet.Filter;
-import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletRegistration.Dynamic;
-
 import com.algaworks.brewer.config.*;
 import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import javax.servlet.Filter;
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration.Dynamic;
 
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
@@ -17,7 +19,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class<?>[] { WebConfig.class, MailConfig.class, S3Config.class};
+		return new Class<?>[] { WebConfig.class, MailConfig.class, S3Config.class };
 	}
 
 	@Override
@@ -37,6 +39,12 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 		// vazia para que o Tomcat escolha o local onde serializar o arq.
 		// temporario qdo fizer o upload
 		registration.setMultipartConfig(new MultipartConfigElement(""));
+	}
+
+	@Override
+	public void onStartup(ServletContext servletContext) throws ServletException {
+		super.onStartup(servletContext);
+		servletContext.setInitParameter("spring.profiles.default", "local");
 	}
 
 }

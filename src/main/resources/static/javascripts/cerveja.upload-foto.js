@@ -6,6 +6,7 @@ Brewer.UploadFoto = (function() {
 		this.inputNomeFoto = $('input[name=foto]');
 		this.inputContentType = $('input[name=contentType]');
 		this.novaFoto = $('input[name=novaFoto]');
+		this.inputUrlFoto = $('input[name=urlFoto]');
 
 		this.htmlFotoCervejaTemplate = $('#foto-cerveja').html();
 		this.template = Handlebars.compile(this.htmlFotoCervejaTemplate);
@@ -31,13 +32,15 @@ Brewer.UploadFoto = (function() {
 		if (this.inputNomeFoto.val()) {
 			renderizarFoto.call(this, {
 				nome : this.inputNomeFoto.val(),
-				contentType : this.inputContentType.val()
+				contentType : this.inputContentType.val(),
+				url : this.inputUrlFoto.val()
 			});
 		}
 	}
 
 	function onUploadCompleto(resposta) {
 		this.novaFoto.val('true');
+		this.inputUrlFoto.val(resposta.url);
 		renderizarFoto.call(this, resposta);
 	}
 
@@ -47,14 +50,8 @@ Brewer.UploadFoto = (function() {
 
 		this.uploadDrop.addClass('hidden');
 
-		var foto = '';
-		if (this.novaFoto.val() == 'true') {
-			foto = 'temp/';
-		}
-		foto += resposta.nome;
-
 		var htmlFotoCerveja = this.template({
-			foto : foto
+			url : resposta.url
 		});
 		this.containerFotoCerveja.append(htmlFotoCerveja);
 

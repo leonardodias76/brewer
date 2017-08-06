@@ -8,20 +8,20 @@ import com.algaworks.brewer.dto.FotoDTO;
 public class FotoStorageRunnable implements Runnable {
 
 	private MultipartFile[] files;
-	private DeferredResult<FotoDTO> deferredResult;
+	private DeferredResult<FotoDTO> resultado;
 	private FotoStorage fotoStorage;
-	
-	public FotoStorageRunnable(MultipartFile[] files, DeferredResult<FotoDTO> deferredResult, FotoStorage fotoStorage) {
+
+	public FotoStorageRunnable(MultipartFile[] files, DeferredResult<FotoDTO> resultado, FotoStorage fotoStorage) {
 		this.files = files;
-		this.deferredResult = deferredResult;
+		this.resultado = resultado;
 		this.fotoStorage = fotoStorage;
 	}
 
 	@Override
 	public void run() {
-		String nomeFoto = this.fotoStorage.salvarTemporariamente(files);
+		String nomeFoto = this.fotoStorage.salvar(files);
 		String contentType = files[0].getContentType();
-		deferredResult.setResult(new FotoDTO(nomeFoto, contentType));
+		resultado.setResult(new FotoDTO(nomeFoto, contentType, fotoStorage.getUrl(nomeFoto)));
 	}
 
 }
